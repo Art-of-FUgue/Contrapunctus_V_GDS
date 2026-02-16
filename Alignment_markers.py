@@ -5,7 +5,7 @@ import scipy as sp
 
 #Global parameters for alignment markers 60*60 crossbars, 1.2cm*1.2cm
 alignment_distance = 200
-number_of_grids = 30 #has to be even
+number_of_grids = 8 #has to be even
 number_of_crosses = number_of_grids * 10
 marker_thickness = 2.5
 crossbar_thickness = marker_thickness/2
@@ -228,20 +228,20 @@ top_cell.insert(big_number_grid_array)
 
 # Load the bottom contact GDS file
 bottom_contact = db.Layout()
-bottom_contact.read('bottom contact.gds')
+bottom_contact.read('Mn contacts.gds')
 read_cell = bottom_contact.top_cell()
 rd_layer_10 = bottom_contact.layer(10,0)
-rd_layer_9 = bottom_contact.layer(9,0)
+# rd_layer_9 = bottom_contact.layer(9,0)
 cell_contact_pads = ly.create_cell('contact_pads')
-cell_fine_features = ly.create_cell('fine_features')
+#cell_fine_features = ly.create_cell('fine_features')
 for shape in read_cell.each_shape(rd_layer_10):
     cell_contact_pads.shapes(layer_10).insert(shape)
-for shape in read_cell.each_shape(rd_layer_9):
-    cell_fine_features.shapes(layer_9).insert(shape)
+#for shape in read_cell.each_shape(rd_layer_9):
+#    cell_fine_features.shapes(layer_9).insert(shape)
 
 position_x = 3
 position_y = 3
-separation = 4
+separation = 1
 bottom_contact_distance = separation*10*alignment_distance
 number_of_bottom_contact = number_of_grids//separation
 
@@ -251,14 +251,14 @@ contact_pad_array = db.DCellInstArray(cell_contact_pads.cell_index(),
                                         db.DVector(0, bottom_contact_distance),
                                         number_of_bottom_contact,
                                         number_of_bottom_contact)
-fine_features_array = db.DCellInstArray(cell_fine_features.cell_index(),
-                                        db.DTrans(db.DTrans.R0, offset_x + position_x*alignment_distance, offset_y + position_y*alignment_distance),
-                                        db.DVector(bottom_contact_distance, 0),
-                                        db.DVector(0, bottom_contact_distance),
-                                        number_of_bottom_contact,
-                                        number_of_bottom_contact)
+#fine_features_array = db.DCellInstArray(cell_fine_features.cell_index(),
+#                                        db.DTrans(db.DTrans.R0, offset_x + position_x*alignment_distance, offset_y + position_y*alignment_distance),
+#                                        db.DVector(bottom_contact_distance, 0),
+#                                        db.DVector(0, bottom_contact_distance),
+#                                        number_of_bottom_contact,
+#                                        number_of_bottom_contact)
 top_cell.insert(contact_pad_array)
-top_cell.insert(fine_features_array)
+#top_cell.insert(fine_features_array)
 
 
 ### create joel cross array ###
@@ -276,4 +276,4 @@ top_cell.insert(joel_cross_array)
 
 
 #finale of the composition
-ly.write('bottom contact grids with alignment markers.gds')
+ly.write('Mn contact grids with alignment markers.gds')
